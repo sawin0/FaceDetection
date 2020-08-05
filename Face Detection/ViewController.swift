@@ -6,9 +6,12 @@
 //  Copyright © 2020 Sabin Ranabhat. All rights reserved.
 //
 
+
+
 import AVFoundation
 import UIKit
 import Vision
+
 
 class ViewController: UIViewController {
     
@@ -16,11 +19,43 @@ class ViewController: UIViewController {
     private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
     private let videoDataOutput = AVCaptureVideoDataOutput()
     private var faceLayers: [CAShapeLayer] = []
+    private let photoOutput = AVCapturePhotoOutput()
+    
+    
+    var circleCGPath: CGPath? = nil
+        
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCamera()
         captureSession.startRunning()
+        
+        
+        // custom circle
+        let midX = self.view.bounds.midX
+        let midY = self.view.bounds.midY
+
+        let circlePath = UIBezierPath(arcCenter: CGPoint(x: midX,y: midY), radius: CGFloat(self.view.bounds.width / 2 ), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
+        
+        circleCGPath = circlePath.cgPath
+        
+        print("circle path below")
+        print(circlePath)
+        print("end")
+
+        let shapeLayerPath = CAShapeLayer()
+        
+        shapeLayerPath.path = circlePath.cgPath
+        //change the fill color
+        shapeLayerPath.fillColor = UIColor.clear.cgColor
+        //you can change the stroke color
+        shapeLayerPath.strokeColor = UIColor.white.cgColor
+        //you can change the line width
+        shapeLayerPath.lineWidth = 3
+
+        // add the blue-circle layer to the shapeLayer ImageView
+        view.layer.addSublayer(shapeLayerPath)
     }
     
     override func viewDidLayoutSubviews() {
@@ -42,6 +77,7 @@ class ViewController: UIViewController {
     }
     
     private func setupPreview() {
+        
         self.previewLayer.videoGravity = .resizeAspectFill
         self.view.layer.addSublayer(self.previewLayer)
         self.previewLayer.frame = self.view.frame
@@ -88,59 +124,23 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             let faceRectConverted = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observation.boundingBox)
             let faceRectanglePath = CGPath(rect: faceRectConverted, transform: nil)
             
+            let circleBox = circleCGPath!.boundingBox
+            let faceBox = faceRectanglePath.boundingBox
+            
+            if(circleBox.contains(faceBox)){
+                print("face is inside the circle")
+            }else{
+                print("face is outside the circle")
+            }
+            
+            
             let faceLayer = CAShapeLayer()
             faceLayer.path = faceRectanglePath
             faceLayer.fillColor = UIColor.clear.cgColor
-            faceLayer.strokeColor = UIColor.yellow.cgColor
+            faceLayer.strokeColor = UIColor.red.cgColor
             
             self.faceLayers.append(faceLayer)
             self.view.layer.addSublayer(faceLayer)
-            
-            //FACE LANDMARKS
-            if let landmarks = observation.landmarks {
-                if let leftEye = landmarks.leftEye {
-                    self.handleLandmark(leftEye, faceBoundingBox: faceRectConverted)
-                }
-                if let leftEyebrow = landmarks.leftEyebrow {
-                    self.handleLandmark(leftEyebrow, faceBoundingBox: faceRectConverted)
-                }
-                if let rightEye = landmarks.rightEye {
-                    self.handleLandmark(rightEye, faceBoundingBox: faceRectConverted)
-                }
-                if let rightEyebrow = landmarks.rightEyebrow {
-                    self.handleLandmark(rightEyebrow, faceBoundingBox: faceRectConverted)
-                }
-
-                if let nose = landmarks.nose {
-                    self.handleLandmark(nose, faceBoundingBox: faceRectConverted)
-                }
-
-                if let outerLips = landmarks.outerLips {
-                    self.handleLandmark(outerLips, faceBoundingBox: faceRectConverted)
-                }
-                if let innerLips = landmarks.innerLips {
-                    self.handleLandmark(innerLips, faceBoundingBox: faceRectConverted)
-                }
-            }
         }
-    }
-    
-    private func handleLandmark(_ eye: VNFaceLandmarkRegion2D, faceBoundingBox: CGRect) {
-        let landmarkPath = CGMutablePath()
-        let landmarkPathPoints = eye.normalizedPoints
-            .map({ eyePoint in
-                CGPoint(
-                    x: eyePoint.y * faceBoundingBox.height + faceBoundingBox.origin.x,
-                    y: eyePoint.x * faceBoundingBox.width + faceBoundingBox.origin.y)
-            })
-        landmarkPath.addLines(between: landmarkPathPoints)
-        landmarkPath.closeSubpath()
-        let landmarkLayer = CAShapeLayer()
-        landmarkLayer.path = landmarkPath
-        landmarkLayer.fillColor = UIColor.clear.cgColor
-        landmarkLayer.strokeColor = UIColor.green.cgColor
-
-        self.faceLayers.append(landmarkLayer)
-        self.view.layer.addSublayer(landmarkLayer)
     }
 }
