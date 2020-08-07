@@ -13,16 +13,16 @@ struct VCSwiftUIView: UIViewControllerRepresentable {
     let storyboard: String
     let VC: String
 
-  func makeUIViewController(context: UIViewControllerRepresentableContext<VCSwiftUIView>) -> ViewController {
+  func makeUIViewController(context: UIViewControllerRepresentableContext<VCSwiftUIView>) -> PhotoVC {
     
     //Load the storyboard
     let loadedStoryboard = UIStoryboard(name: storyboard, bundle: nil)
     
     //Load the ViewController
-     return loadedStoryboard.instantiateViewController(withIdentifier: VC) as! ViewController
+     return loadedStoryboard.instantiateViewController(withIdentifier: VC) as! PhotoVC
     
   }
   
-  func updateUIViewController(_ uiViewController: ViewController, context: UIViewControllerRepresentableContext<VCSwiftUIView>) {
+  func updateUIViewController(_ uiViewController: PhotoVC, context: UIViewControllerRepresentableContext<VCSwiftUIView>) {
   }
 }

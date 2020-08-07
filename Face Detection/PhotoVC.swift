@@ -13,7 +13,7 @@ import UIKit
 import Vision
 
 
-class ViewController: UIViewController {
+class PhotoVC: UIViewController, AVCapturePhotoCaptureDelegate {
     
     private let captureSession = AVCaptureSession()
     private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
@@ -23,13 +23,18 @@ class ViewController: UIViewController {
     
     
     var circleCGPath: CGPath? = nil
-        
+    var processingImage = false
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCamera()
         captureSession.startRunning()
+        
+        // fixes Error: Thread 1: Exception: "*** -[AVCapturePhotoOutput capturePhotoWithSettings:delegate:] No active and enabled video connection"
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
+        }
         
         
         // custom circle
@@ -92,7 +97,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension PhotoVC: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
@@ -120,27 +125,47 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     private func handleFaceDetectionObservations(observations: [VNFaceObservation]) {
-        for observation in observations {
-            let faceRectConverted = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observation.boundingBox)
-            let faceRectanglePath = CGPath(rect: faceRectConverted, transform: nil)
-            
-            let circleBox = circleCGPath!.boundingBox
-            let faceBox = faceRectanglePath.boundingBox
-            
-            if(circleBox.contains(faceBox)){
-                print("face is inside the circle")
-            }else{
-                print("face is outside the circle")
+        if !processingImage {
+            for observation in observations {
+                let faceRectConverted = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observation.boundingBox)
+                let faceRectanglePath = CGPath(rect: faceRectConverted, transform: nil)
+                
+                let circleBox = circleCGPath!.boundingBox
+                let faceBox = faceRectanglePath.boundingBox
+                
+                let faceArea = faceBox.size.width * faceBox.size.height
+                if(circleBox.contains(faceBox) && faceArea > 50000){
+                    print("face is inside the circle")
+                    self.processingImage = true
+                    if captureSession.isRunning {
+                        let settings = AVCapturePhotoSettings()
+                        self.photoOutput.capturePhoto(with: settings, delegate: self)
+                    }
+                    
+                }else{
+                    print("face is outside the circle")
+                }
+                
+                
+                let faceLayer = CAShapeLayer()
+                faceLayer.path = faceRectanglePath
+                faceLayer.fillColor = UIColor.clear.cgColor
+                faceLayer.strokeColor = UIColor.red.cgColor
+                
+                self.faceLayers.append(faceLayer)
+                self.view.layer.addSublayer(faceLayer)
             }
-            
-            
-            let faceLayer = CAShapeLayer()
-            faceLayer.path = faceRectanglePath
-            faceLayer.fillColor = UIColor.clear.cgColor
-            faceLayer.strokeColor = UIColor.red.cgColor
-            
-            self.faceLayers.append(faceLayer)
-            self.view.layer.addSublayer(faceLayer)
         }
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        guard let imageData = photo.fileDataRepresentation() else { return }
+        let previewImage = UIImage(data: imageData)
+        self.processingImage = true
+        
+        print("start")
+        print(previewImage!.toBase64UrlSafe() ?? "default")
+        print("end")
+        
     }
 }

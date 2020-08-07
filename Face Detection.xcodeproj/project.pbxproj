@@ -12,7 +12,8 @@
 		AA5029E724BEECD4006576A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA5029E524BEECD4006576A4 /* Main.storyboard */; };
 		AA5029E924BEECD8006576A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA5029E824BEECD8006576A4 /* Assets.xcassets */; };
 		AA5029EC24BEECD8006576A4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA5029EA24BEECD8006576A4 /* LaunchScreen.storyboard */; };
-		AA5029F624BEF5EE006576A4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5029F524BEF5EE006576A4 /* ViewController.swift */; };
+		AA5029F624BEF5EE006576A4 /* PhotoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5029F524BEF5EE006576A4 /* PhotoVC.swift */; };
+		C24F264424DBE8BA00CACBBB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24F264324DBE8BA00CACBBB /* Extensions.swift */; };
 		C2FBB66F24D827EB009D5D6C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FBB66E24D827EB009D5D6C /* ContentView.swift */; };
 		C2FBB67124D8281D009D5D6C /* VCSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FBB67024D8281D009D5D6C /* VCSwiftUIView.swift */; };
 /* End PBXBuildFile section */
@@ -25,7 +26,8 @@
 		AA5029E824BEECD8006576A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA5029EB24BEECD8006576A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AA5029ED24BEECD8006576A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA5029F524BEF5EE006576A4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AA5029F524BEF5EE006576A4 /* PhotoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVC.swift; sourceTree = "<group>"; };
+		C24F264324DBE8BA00CACBBB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C2FBB66E24D827EB009D5D6C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C2FBB67024D8281D009D5D6C /* VCSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCSwiftUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,9 +68,10 @@
 				AA5029E824BEECD8006576A4 /* Assets.xcassets */,
 				AA5029EA24BEECD8006576A4 /* LaunchScreen.storyboard */,
 				AA5029ED24BEECD8006576A4 /* Info.plist */,
-				AA5029F524BEF5EE006576A4 /* ViewController.swift */,
+				AA5029F524BEF5EE006576A4 /* PhotoVC.swift */,
 				C2FBB66E24D827EB009D5D6C /* ContentView.swift */,
 				C2FBB67024D8281D009D5D6C /* VCSwiftUIView.swift */,
+				C24F264324DBE8BA00CACBBB /* Extensions.swift */,
 			);
 			path = "Face Detection";
 			sourceTree = "<group>";
@@ -144,7 +147,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA5029F624BEF5EE006576A4 /* ViewController.swift in Sources */,
+				AA5029F624BEF5EE006576A4 /* PhotoVC.swift in Sources */,
+				C24F264424DBE8BA00CACBBB /* Extensions.swift in Sources */,
 				AA5029E024BEECD4006576A4 /* AppDelegate.swift in Sources */,
 				C2FBB66F24D827EB009D5D6C /* ContentView.swift in Sources */,
 				C2FBB67124D8281D009D5D6C /* VCSwiftUIView.swift in Sources */,
